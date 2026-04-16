@@ -1,0 +1,346 @@
+
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQ1NmY3MmEzN2VmY2E4YzQ2OTg1MjUiLCJyb2xlIjoiYWRtaW4iLCJjb21wYW55IjpudWxsLCJpYXQiOjE3NzU1OTUzNzgsImV4cCI6MTc3NTYwMjU3OH0._SpBvm7OKVwiTcbrXvPqHcUAUTFwv-5A1R-oysaaYyA
+@refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQ1NmY3MmEzN2VmY2E4YzQ2OTg1MjUiLCJpYXQiOjE3NzU1OTUzNzgsImV4cCI6MTc3NjIwMDE3OH0.TzNc269mpcCqDxLGI-nlenhIp-zTYvd_ZlytyvL0XaM
+
+@code =490294
+@accessToken_carlos=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQ1NmZmOWEzN2VmY2E4YzQ2OTg1MzIiLCJyb2xlIjoiYWRtaW4iLCJjb21wYW55IjpudWxsLCJpYXQiOjE3NzU1OTU1MTMsImV4cCI6MTc3NTYwMjcxM30.lqzwPNdl1EBbARaxjeu4gXnuMuQ2S4Tk6RF8xVXDG50
+@refreshToken_carlos=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQ1NmZmOWEzN2VmY2E4YzQ2OTg1MzIiLCJpYXQiOjE3NzU1OTU1MTMsImV4cCI6MTc3NjIwMDMxM30.ZrfX6AIwiJayfJCRmrBxz8Ydz2zAuW8GU_cuZsLYyc0
+# --------------------------------------------------------------------------------------
+### 
+GET http://localhost:3000/health HTTP/1.1
+
+###
+GET http://localhost:3000/api/user/ruta-inventada
+
+
+# --------------REGISTER------------------------------------------------------------------------------------
+### Registro correcto
+POST http://localhost:3000/api/user/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "marta@example.com",
+  "password": "12345678"
+}
+
+### registro email invalido 
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{
+  "email": "esto-no-es-un-email",
+  "password": "Password123"
+}
+
+### Contraseña corta 
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{
+  "email": "mike@test.com",
+  "password": "123"
+}
+
+### Registro con correo ya registrado
+POST http://localhost:3000/api/user/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "marta@example.com",
+  "password": "Password123"
+}
+
+### Poner datos personales 
+PUT http://localhost:3000/api/user/register HTTP/1.1
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Marta",
+  "lastName": "García López",
+  "nif": "12345678A",
+  "address": {
+    "street": "Calle Mayor",
+    "number": "10",
+    "postal": "28001",
+    "city": "Madrid",
+    "province": "Madrid"
+  }
+}
+
+### Sin datos obligatorios
+PUT http://localhost:3000/api/user/register
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "A"
+}
+
+
+### 
+POST http://localhost:3000/api/user/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": { "$ne": null },
+  "password": "12345678"
+}
+
+
+
+
+
+# -------------VALIDACIÓN EMAIL---------------------------------------------------------------------------------
+### Validación correcta
+PUT http://localhost:3000/api/user/validation
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "{{code}}"
+}
+
+PUT http://localhost:3000/api/user/validation
+Authorization: Bearer {{accessToken_carlos}}
+Content-Type: application/json
+
+{
+  "code": "965358"
+}
+
+### Validación con código incorrecto
+PUT http://localhost:3000/api/user/validation
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "000000"
+}
+
+
+
+### Validación Sin token
+PUT http://localhost:3000/api/user/validation HTTP/1.1
+Content-Type: application/json
+
+{
+  "code": "123456"
+}
+
+### Validación con formato de código incorrecto
+PUT http://localhost:3000/api/user/validation
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "code": "12AB"
+}
+
+
+# -------------LOGIN------------------------------------------------------------------------------------
+
+### Login
+POST http://localhost:3000/api/user/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "marta@example.com",
+  "password": "12345678"
+}
+
+### Login con contraseña incorrecta
+POST http://localhost:3000/api/user/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "marta@example.com",
+  "password": "4567890"
+}
+
+### Login con email no registrado
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+  "email": "noexiste@test.com",
+  "password": "Password123"
+}
+
+### Login con inyección de código
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+  "email": { "$gt": "" },
+  "password": "cualquiercosa"
+}
+
+
+
+# ------------COMPAÑIA------------------------------------------------------------------------------------
+
+### 
+PATCH http://localhost:3000/api/user/company
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Constructora García S.L.",
+  "cif": "B12345678",
+  "isFreelance": false,
+  "address": {
+    "street": "Calle Mayor",
+    "number": "10",
+    "postal": "28001",
+    "city": "Madrid",
+    "province": "Madrid"
+  }
+}
+
+### Paso 1: Crear segundo usuario 
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{ "email": "carlos@empresa.com", "password": "Password123" }
+
+### Paso 2: Unirse a la compañía con el segundo usuario
+PATCH http://localhost:3000/api/user/company
+Authorization: Bearer {{accessToken_carlos}}
+Content-Type: application/json
+
+{
+  "name": "Constructora García S.L.",
+  "cif": "B12345678",
+  "isFreelance": false,
+  "address": {
+    "street": "Calle Alcalá",
+    "number": "25",
+    "postal": "28014",
+    "city": "Madrid",
+    "province": "Madrid"
+  }
+}
+
+### Subir logo de la compañía
+PATCH http://localhost:3000/api/user/logo
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="logo"; filename="logo.png"
+Content-Type: image/png
+
+< ./uploads/logo.png
+--WebAppBoundary--
+
+# ------------PERFIL------------------------------------------------------------------------------------
+
+### Obtener perfil
+GET http://localhost:3000/api/user
+Authorization: Bearer {{accessToken}}
+# -----------REFRESH TOKEN------------------------------------------------------------------------------------
+### Refresh token correcto
+POST http://localhost:3000/api/user/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken_carlos}}"
+}
+
+### Refresh token con token inválido
+POST http://localhost:3000/api/user/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQ1NjZjNTIxODVlMTZlNDk2YzJjZjgiLCJpYXQiOjE3NzU1OTM5MTgsImV4cCI6MTc3NjE5ODcxOH0.JLRCD5U_eiY4IZcrqP29pngRR64lezq8mmFbGScCPBw"
+}
+
+#----------LOGOUT------------------------------------------------------------------------------------
+
+### Logout
+POST http://localhost:3000/api/user/logout
+Authorization: Bearer {{accessToken}}
+
+### Refresh después de logout
+POST http://localhost:3000/api/user/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+#---------ELIMINAR CUENTA------------------------------------------------------------------------------------
+
+### Eliminar cuenta soft
+DELETE http://localhost:3000/api/user?soft=true
+Authorization: Bearer {{accessToken_carlos}}
+
+### Eliminar cuenta hard
+DELETE http://localhost:3000/api/user?soft=false
+Authorization: Bearer {{accessToken_carlos}}
+
+
+# --------CAMBIAR CONTRASEÑA------------------------------------------------------------------------------------
+
+### Cambiar contraseña con datos correctos
+PUT http://localhost:3000/api/user/password
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "12345678",
+  "newPassword": "NuevaPassword456"
+}
+
+### Contraseña igual 
+PUT http://localhost:3000/api/user/password
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "NuevaPassword456",
+  "newPassword": "NuevaPassword456"
+}
+
+### Contraseña actual incorrecta
+PUT http://localhost:3000/api/user/password
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "currentPassword": "ContraseñaMal",
+  "newPassword": "OtraPassword789"
+}
+
+# --------INVITAR USUARIO------------------------------------------------------------------------------------
+
+### Invitar usuario 
+POST http://localhost:3000/api/user/invite
+Authorization: Bearer {{accessToken_carlos}}
+Content-Type: application/json
+
+{
+  "email": "invitado@empresa.com",
+  "name": "Pedro",
+  "lastName": "Martínez"
+}
+
+### Invitado ya registrado
+POST http://localhost:3000/api/user/invite
+Authorization: Bearer {{accessToken_carlos}}
+Content-Type: application/json
+
+{
+  "email": "marta@example.com"
+}
+
+### Usuario no admin intenta invitar
+POST http://localhost:3000/api/user/invite
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "email": "nuevo@test.com"
+}
+
