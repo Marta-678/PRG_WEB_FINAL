@@ -1,23 +1,35 @@
 # Validación 
-## Función 
-Se definen las validaciones para las operaciones principales del usuario. Se ha usado tecnología Zod (Del tema 4 y 6). 
+Esta carpeta contiene los esquemas de validación con Zod.
 
-Zod permite describir “la forma” esperada de `body/query/params`y validar antes de entrar en el controlador.
+Su objetivo es validar la entrada de cada endpoint antes de ejecutar lógica de negocio.
 
-**Valida formularios de**:
-- registro
-- login
-- validación por código
-- datos personales
-- datos de empresa
-- cambio de contraseña
-- invitación de usuarios
+## Archivos
 
+### `user.validator.js`
 
-## Estructura Seguida 
-Zod se usa para definir esquemas de validación de forma clara y centralizada.
+Debe incluir los esquemas del módulo de usuarios, por ejemplo:
 
-- Se crea un esquema Zod
-- Se valida el objeto `body`de la petición 
-- Dentro del `body`se validan los campos y se normalizan 
-- Se exxportan para ser usados en [[src/routes/user.routes.js|user.routes.js]]
+- registro;
+- validación de email;
+- login;
+- onboarding de datos personales;
+- onboarding de compañía;
+- refresh token;
+- cambio de contraseña;
+- invitación.
+
+### `client.validator.js`
+
+Debe incluir los esquemas de validación para crear, actualizar, listar y restaurar clientes.
+
+### `project.validator.js`
+
+Debe incluir los esquemas de validación para crear, actualizar, listar y restaurar proyectos.
+
+### `deliverynote.validator.js`
+
+Debe incluir los esquemas de validación para crear, listar, firmar y borrar albaranes.
+
+## Qué va a hacer esta carpeta
+
+Definir de forma explícita qué datos acepta cada endpoint y rechazar entradas inválidas antes de llegar al controlador.

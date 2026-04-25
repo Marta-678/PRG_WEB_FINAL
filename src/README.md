@@ -4,10 +4,18 @@ Su función es separar dos responsabilidades:
 - `app.js`: construye y configura la aplicación Express
 - `index.js`: arranca el servidor y prepara el entorno antes de levantar la app
 
-## Tecnlogías 
-- Express
-- Helmet 
-- express-rate-limit
+## Contenido
+- `config/`: configuración centralizada de la app y de sus servicios.
+- `controllers/`: lógica que responde a cada endpoint.
+- `middleware/`: middlewares de autenticación, validación, errores y subida de archivos.
+- `models/`: modelos de Mongoose.
+- `routes/`: definición de endpoints.
+- `services/`: servicios auxiliares y lógica transversal.
+- `utils/`: utilidades compartidas.
+- `validators/`: esquemas Zod.
+- `docs/`: configuración Swagger si se separa en una carpeta propia.
+- `app.js`: configuración principal de Express.
+- `index.js`: punto de entrada del servidor.
 
-## APP.JS
-Se crear la aplicación aquí. 
+## Objetivo
+Mantener el proyecto ordenado y separar responsabilidades para que cada parte del backend tenga una función clara.
