@@ -2,8 +2,16 @@ import mongoose from 'mongoose';
 
 const clientSchema = new mongoose.Schema(
     {
-  user: ObjectId,          // ref: 'User' — usuario que lo creó
-  company: ObjectId,       // ref: 'Company' — compañía a la que pertenece
+  user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },          // ref: 'User' — usuario que lo creó
+  company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: true,
+    },       // ref: 'Company' — compañía a la que pertenece
   name: String,            // Nombre del cliente
   cif: String,             // CIF/NIF del cliente
   email: String,
@@ -20,6 +28,9 @@ const clientSchema = new mongoose.Schema(
   updatedAt: Date
 }
 );
+
+clientSchema.index({ cif: 1, company: 1 }, { unique: true });
+clientSchema.index({ company: 1 });
 
 const Client = mongoose.model('Client', clientSchema);
 export default Client;

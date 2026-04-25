@@ -30,28 +30,28 @@ const {
   updateCompanyLogo,
 } = userController;
 
-const router = Router();
+const userRouter = Router();
 
 // Públicas
-router.post('/register', validate(registerSchema), register);
-router.post('/login',    validate(loginSchema),    login);
-router.post('/refresh', validate(refreshTokenSchema), refreshToken);
+userRouter.post('/register', validate(registerSchema), register);
+userRouter.post('/login',    validate(loginSchema),    login);
+userRouter.post('/refresh', validate(refreshTokenSchema), refreshToken);
 
 // Requieren autenticación
-router.put('/validation', authMiddleware, validate(validateEmailSchema), validateEmail);
-router.put('/register',   authMiddleware, validate(personalDataSchema),  updatePersonalData);
-router.patch('/company',  authMiddleware, validate(companyDataSchema),   updateCompanyData);
+userRouter.put('/validation', authMiddleware, validate(validateEmailSchema), validateEmail);
+userRouter.put('/register',   authMiddleware, validate(personalDataSchema),  updatePersonalData);
+userRouter.patch('/company',  authMiddleware, validate(companyDataSchema),   updateCompanyData);
 
-router.get('/',    authMiddleware, getProfile);
-router.post('/logout',    authMiddleware, logout);
+userRouter.get('/',    authMiddleware, getProfile);
+userRouter.post('/logout',    authMiddleware, logout);
 
-router.put('/password',   authMiddleware, validate(changePasswordSchema), changePassword);
-router.delete('/',  authMiddleware, deleteProfile);
+userRouter.put('/password',   authMiddleware, validate(changePasswordSchema), changePassword);
+userRouter.delete('/',  authMiddleware, deleteProfile);
 
 // Solo admins pueden invitar
-router.post('/invite', authMiddleware, checkRol(['admin']), validate(inviteUserSchema), inviteUser);
+userRouter.post('/invite', authMiddleware, checkRol(['admin']), validate(inviteUserSchema), inviteUser);
 
 // Logo — multer procesa el multipart/form-data
-router.patch('/logo', authMiddleware, upload.single('logo'), updateCompanyLogo);
+userRouter.patch('/logo', authMiddleware, upload.single('logo'), updateCompanyLogo);
 
-export default router;
+export default userRouter;

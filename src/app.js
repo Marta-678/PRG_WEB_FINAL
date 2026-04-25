@@ -1,8 +1,13 @@
 import express from 'express';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-// import mongoSanitize from 'express-mongo-sanitize';
-import router from './routes/user.routes.js';
+import mongoSanitize from 'express-mongo-sanitize';
+
+
+import userRouter from './routes/user.routes.js';
+import clientRouter from './routes/client.routes.js';
+import projectRouter from './routes/project.routes.js';
+import deliveryNoteRouter from './routes/deliverynote.routes.js';
 import { notFound, errorHandler } from './middleware/error-handler.js';
 
 const app = express();
@@ -20,7 +25,7 @@ app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(mongoSanitize());
+app.use(mongoSanitize());
 
 
 app.use('/uploads', express.static('uploads'));
@@ -45,7 +50,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/user', router);
+app.use('/api/user',userRouter);
+app.use('/api/client', clientRouter);
+app.use('/api/project', projectRouter);
+app.use('/api/deliverynote', deliveryNoteRouter);
 
 app.use(notFound);
 app.use(errorHandler);

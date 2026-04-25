@@ -1,9 +1,21 @@
 import mongoose from 'mongoose';
 
 const porjectSchema= new mongoose.Schema({
-  user: ObjectId,          // ref: 'User' — usuario que lo creó
-  company: ObjectId,       // ref: 'Company' — compañía a la que pertenece
-  client: ObjectId,        // ref: 'Client' — cliente asociado
+  user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },          // ref: 'User' — usuario que lo creó
+  company: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Company',
+      required: true,
+    },       // ref: 'Company' — compañía a la que pertenece
+  client: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Client',
+      required: true,
+    },        // ref: 'Client' — cliente asociado
   name: String,            // Nombre del proyecto
   projectCode: String,     // Código interno único
   address: {
@@ -20,6 +32,10 @@ const porjectSchema= new mongoose.Schema({
   createdAt: Date,
   updatedAt: Date
 });
+
+projectSchema.index({ projectCode: 1, company: 1 }, { unique: true });
+projectSchema.index({ company: 1 });
+projectSchema.index({ client: 1 });
 
 const Project= mongoose.model('Project', porjectSchema);
 export default Project;
