@@ -1,0 +1,18 @@
+@accessToken= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWYzMzhhZTlmYTdjMzk3YTBiMTcwNmQiLCJyb2xlIjoiYWRtaW4iLCJjb21wYW55IjpudWxsLCJpYXQiOjE3Nzc1NDc0MzgsImV4cCI6MTc3NzU1NDYzOH0.Oz7ithluhmYGmMmGFFT1gctFjKSiowRlNsOx-3irq3U
+@refreshToken= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWYzMzhhZTlmYTdjMzk3YTBiMTcwNmQiLCJpYXQiOjE3Nzc1NDc0MzgsImV4cCI6MTc3ODE1MjIzOH0.pWIkOQLWlGbK1aD03eKe0FX8__6BvvhVRM-i9-LXoL0
+
+### 
+POST http://localhost:3000/api/client 
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Cliente",
+  "cif": "B12345678",
+  "email": "cliente.prueba@example.com",
+  "address": {
+    "street": "Calle de Prueba, 123",
+    "city": "Ciudad",
+    "country": "País"
+  }
+} 

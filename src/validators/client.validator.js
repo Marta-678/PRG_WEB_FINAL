@@ -21,7 +21,7 @@ export const createClientSchema = z.object({
 });
 
 export const updateClientSchema = z.object({
-    name: z.string().trim().min(1, 'El nombre es obligatorio').optional(),
+    name: z.string().trim().min(1, 'El nombre es obligatorio'),
     cif: z.string({ required_error: 'El CIF es obligatorio' }).trim().min(9, 'El CIF no válido').optional(),
     email: z.string().trim().email('Email no válido').toLowerCase().optional(),
     phone: z.string().trim().optional(),

@@ -1,11 +1,12 @@
 import express from 'express';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-import mongoSanitize from 'express-mongo-sanitize';
+// import mongoSanitize from 'express-mongo-sanitize';
 
 
 import userRouter from './routes/user.routes.js';
-
+import clientRoutes from './routes/client.routes.js';
+import { notFound, errorHandler } from './middleware/error-handler.js';
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use(mongoSanitize());
+// app.use(mongoSanitize());
 
 
 app.use('/uploads', express.static('uploads'));
@@ -48,6 +49,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/user',userRouter);
+app.use('/api/client', clientRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
