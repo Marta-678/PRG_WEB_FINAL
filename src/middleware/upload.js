@@ -2,9 +2,10 @@ import multer from 'multer';
 import { extname, join } from 'node:path';
 import { mkdirSync } from 'node:fs';
 
-// Carpeta de destino (se crea si no existe)
+
 const UPLOAD_DIR = join(process.cwd(), 'uploads');
 mkdirSync(UPLOAD_DIR, { recursive: true });
+
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
@@ -32,6 +33,31 @@ const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5 MB
   },
+});
+
+
+// --------------------------------------------------
+
+const ALLOWED_IMAGE_MIMES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
+const imageFilter = (_req, file, cb) => {
+  if (ALLOWED_IMAGE_MIMES.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('Solo se permiten imagenes (jpeg, png, gif, webp)'), false);
+  }
+};
+
+export const uploadImage = multer({
+  storage: multer.memoryStorage(),
+  fileFilter: imageFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
+});
+
+
+export const uploadAny = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
 });
 
 export default upload;
