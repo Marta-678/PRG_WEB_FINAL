@@ -1,36 +1,59 @@
 import mongoose from 'mongoose';
 
 const clientSchema = new mongoose.Schema(
-    {
-  user: {
+  {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
-    },          // ref: 'User' — usuario que lo creó
-  company: {
+    },
+    company: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Company',
       required: true,
-    },       // ref: 'Company' — compañía a la que pertenece
-  name: String,            // Nombre del cliente
-  cif: String,             // CIF/NIF del cliente
-  email: String,
-  phone: String,
-  address: {
-    street: String,
-    number: String,
-    postal: String,
-    city: String,
-    province: String
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    cif: {
+      type: String,
+      required: true,
+      trim: true,
+      uppercase: true,
+    },
+    email: {
+      type: String,
+      trim: true,
+      lowercase: true,
+    },
+    phone: {
+      type: String,
+      trim: true,
+    },
+    address: {
+      street: String,
+      number: String,
+      postal: String,
+      city: String,
+      province: String,
+    },
+    deleted: {
+      type: Boolean,
+      default: false,
+    },
   },
-  deleted: Boolean,        // Soft delete
-  createdAt: Date,
-  updatedAt: Date
-}
+  {
+    timestamps: true,
+    versionKey: false,
+  }
 );
 
 clientSchema.index({ cif: 1, company: 1 }, { unique: true });
 clientSchema.index({ company: 1 });
+clientSchema.index({ deleted: 1 });
 
 const Client = mongoose.model('Client', clientSchema);
+
 export default Client;
