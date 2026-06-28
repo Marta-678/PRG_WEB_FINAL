@@ -8,6 +8,8 @@ import userRouter from './routes/user.routes.js';
 import clientRoutes from './routes/client.routes.js';
 import { notFound, errorHandler } from './middleware/error-handler.js';
 
+import projectRoutes from './routes/project.routes.js';
+
 const app = express();
 
 const limiter = rateLimit({
@@ -50,6 +52,8 @@ app.use((req, res, next) => {
 
 app.use('/api/user',userRouter);
 app.use('/api/client', clientRoutes);
+app.use('/api/project', projectRoutes);
+
 
 app.use(notFound);
 app.use(errorHandler);

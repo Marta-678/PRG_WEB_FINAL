@@ -4,6 +4,7 @@ import checkRol from '../middleware/role.middleware.js';
 import { validate } from '../middleware/validate.js';
 import upload from '../middleware/upload.js';
 import * as userController from '../controllers/user.controller.js';
+
 import {
   registerSchema,
   loginSchema,

@@ -29,3 +29,19 @@ export const updateProjectValidator = z.object({
     notes: z.string().optional(),
     clientId: z.string().min(1, 'El ID del cliente es requerido').optional()
 });
+
+export const projectIdValidator= z.object({
+    id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de MongoDB no válido')
+})
+
+export const listProject= z.object({
+    page: z.coerce.number().int().min(1).optional(),
+    limit: z.coerce.number().int().min(1).max(100).optional(),
+    clientId: z.string().min(1, 'El ID del cliente es requerido'),
+    name: z.string().trim().optional(),
+    active: z
+        .enum(['true', 'false'])
+        .transform((value) => value === 'true')
+        .optional(),
+    sort: z.string().trim().optional(),
+});

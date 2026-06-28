@@ -19,3 +19,12 @@ Su función es separar dos responsabilidades:
 
 ## Objetivo
 Mantener el proyecto ordenado y separar responsabilidades para que cada parte del backend tenga una función clara.
+
+---
+
+_Voy a explicar más a profundidad aquí_
+
+## APP.JS
+Configura la alicación principal de Express. Aquí se inicializan los middlewares globales, las rutas principales de la API, las rutas de prueba y el sistema centralizado de errores. 
+
+No levanta el servidor directamente.
