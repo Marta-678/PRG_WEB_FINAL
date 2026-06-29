@@ -16,3 +16,32 @@ npm run dev
 ```bash
 npm start
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----
+
+##  .dockerignore
+
+
+| Línea           | Motivo                                                                                                            |
+| --------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `node_modules`  | Docker instala sus propias dependencias con `npm install` o `npm ci`.                                             |
+| `.git`          | El historial de Git no hace falta dentro del contenedor.                                                          |
+| `.env`          | Evita incluir credenciales en la imagen.                                                                          |
+| `coverage`      | Son resultados de tests, no son necesarios para ejecutar la aplicación.                                           |
+| `uploads`       | Son archivos generados por la aplicación; normalmente se usan volúmenes o almacenamiento externo como Cloudinary. |
+| `npm-debug.log` | Archivo temporal de errores de npm.                                                                               |

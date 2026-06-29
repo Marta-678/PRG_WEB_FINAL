@@ -53,7 +53,7 @@ app.use((req, res, next) => {
 app.use('/api/user',userRouter);
 app.use('/api/client', clientRoutes);
 app.use('/api/project', projectRoutes);
-
+app.use('/api/deliverynote', deliveryNoteRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

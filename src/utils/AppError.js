@@ -5,6 +5,7 @@ export default class AppError extends Error {
     this.statusCode = statusCode;
     this.details = details;
     this.isOperational = true;
+    Error.captureStackTrace(this, this.constructor);
   }
 
   static badRequest(message = 'Solicitud inválida', details = null) {
