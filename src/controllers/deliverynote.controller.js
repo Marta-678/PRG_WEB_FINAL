@@ -117,3 +117,83 @@ export const updateDeliveryNote = async (req, res) => {
     res.json(note);
 };
 
+export const getDeliveryNotePdf = async (req, res, next) => {
+  try {
+    const note = await findNoteInCompany(req.params.id, getCompanyId(req));
+    await note.populate(POPULATE_FULL);
+
+    if (note.signed && note.pdfUrl) {
+      return res.status(200).json({
+        status: 'success',
+        data: { pdfUrl: note.pdfUrl },
+      });
+    }
+
+    const pdfUrl = await generateAndUploadPdf(note);
+    note.pdfUrl = pdfUrl;
+    await note.save();
+
+    return res.status(200).json({
+      status: 'success',
+      data: { pdfUrl },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const signDeliveryNote = async (req, res, next) => {
+  try {
+    const note = await findNoteInCompany(req.params.id, getCompanyId(req));
+
+    if (note.signed) {
+      return next(AppError.badRequest('El albarán ya está firmado'));
+    }
+
+    if (!req.file) {
+      return next(AppError.badRequest('La imagen de firma es obligatoria'));
+    }
+
+    const signatureUrl = await uploadImage(req.file);
+    note.signatureUrl = signatureUrl;
+    note.signed = true;
+    note.signedAt = new Date();
+
+    await note.populate(POPULATE_FULL);
+
+    const pdfUrl = await generateAndUploadPdf(note);
+    note.pdfUrl = pdfUrl;
+
+    await note.save();
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Albarán firmado correctamente',
+      data: { deliveryNote: note },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteDeliveryNote = async (req, res, next) => {
+  try {
+    const note = await findNoteInCompany(req.params.id, getCompanyId(req));
+
+    if (note.signed) {
+      return next(AppError.badRequest('No se puede borrar un albarán firmado'));
+    }
+
+    await DeliveryNote.deleteOne({
+      _id: note._id,
+      company: getCompanyId(req),
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Albarán eliminado correctamente',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
