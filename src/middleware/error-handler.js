@@ -1,63 +1,48 @@
 import AppError from '../utils/AppError.js';
+import { sendErrorToSlack } from '../services/logger.service.js';
 
 export const notFound = (req, res, next) => {
-  return next(AppError.notFound(`Ruta no encontrada: ${req.method} ${req.originalUrl}`));
+  next(AppError.notFound(`Ruta no encontrada: ${req.method} ${req.originalUrl}`));
 };
 
-export const errorHandler = (err, req, res, next) => {
-  console.error('ERROR HANDLER:', err);
+export const errorHandler = async (err, req, res, next) => {
+  let error = err;
 
-  if (err instanceof AppError) {
-    return res.status(err.statusCode).json({
-      ok: false,
-      message: err.message,
-      ...(err.details && Array.isArray(err.details) && { details: err.details }),
-    });
+  if (err.name === 'CastError') {
+    error = AppError.badRequest(`ID no válido: ${err.value}`);
   }
 
-  // Error de validación de Mongoose (campo único duplicado)
   if (err.code === 11000) {
     const field = Object.keys(err.keyValue || {})[0] || 'campo';
-    return res.status(409).json({
-      ok: false,
-      message: `Ya existe un registro con ese ${field}`,
-    });
+    error = AppError.conflict(`Ya existe un registro con ese ${field}`);
   }
 
-  return res.status(500).json({
-    ok: false,
-    message: err?.message || 'Error interno del servidor',
-  });
+  if (err.name === 'ValidationError' && err.errors) {
+    const details = Object.values(err.errors).map((e) => ({
+      field: e.path,
+      message: e.message,
+    }));
+    error = AppError.badRequest('Error de validación', details);
+  }
 
-  if (err instanceof multer.MulterError) {
+  if (err.name === 'MulterError') {
     const message =
       err.code === 'LIMIT_FILE_SIZE'
         ? 'El archivo supera el tamaño máximo permitido'
         : 'Error al procesar el archivo';
-
-    return res.status(400).json({
-      ok: false,
-      message,
-    });
-  }
-  
- if (err instanceof mongoose.Error.ValidationError) {
-    const details = Object.values(err.errors).map((error) => ({
-      field: error.path,
-      message: error.message,
-    }));
-
-    return res.status(400).json({
-      ok: false,
-      message: 'Error de validación',
-      details,
-    });
+    error = AppError.badRequest(message);
   }
 
-  if (err instanceof mongoose.Error.CastError) {
-    return res.status(400).json({
-      ok: false,
-      message: `ID no válido: ${err.value}`,
-    });
+  const statusCode = error instanceof AppError ? error.statusCode : 500;
+
+  if (statusCode >= 500) {
+    console.error('ERROR HANDLER:', err);
+    await sendErrorToSlack(err, req);
   }
+
+  res.status(statusCode).json({
+    ok: false,
+    message: statusCode >= 500 ? 'Error interno del servidor' : error.message,
+    ...(error.details && Array.isArray(error.details) && { details: error.details }),
+  });
 };

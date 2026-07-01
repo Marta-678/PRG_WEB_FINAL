@@ -1,32 +1,34 @@
-const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
+import { config } from '../config/index.js';
 
-// TODO: revisar , no me convence 
-const buildSlackPayload = (message) => {
-  return {
-    text: message,
-  };
-}
+const buildSlackPayload = (error, req) => {
+  const text = [
+    '*Error 5XX en BildyApp*',
+    `timestamp: ${new Date().toISOString()}`,
+    `metodo: ${req.method}`,
+    `ruta: ${req.originalUrl}`,
+    `mensaje: ${error.message}`,
+    `stack: ${error.stack}`,
+  ].join('\n');
 
-const sendErrorToSlack = async (message) => {
-  if (!SLACK_WEBHOOK_URL) {
-    console.warn('SLACK_WEBHOOK_URL is not defined. Skipping Slack notification.');
-    return;
-    }
-    const payload = buildSlackPayload(message);
-    try {
-      const response = await fetch(SLACK_WEBHOOK_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-        });
-        if (!response.ok) {
-            console.error('Failed to send error to Slack:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error sending error to Slack:', error);
-    }
+  return { text };
 };
 
-module.exports = {sendErrorToSlack};
+export const sendErrorToSlack = async (error, req) => {
+  if (!config.slackWebhookUrl) {
+    return;
+  }
+
+  try {
+    const response = await fetch(config.slackWebhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(buildSlackPayload(error, req)),
+    });
+
+    if (!response.ok) {
+      console.error('Error enviando a Slack:', response.statusText);
+    }
+  } catch (slackError) {
+    console.error('Error enviando a Slack:', slackError.message);
+  }
+};
