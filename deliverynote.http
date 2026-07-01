@@ -1,0 +1,86 @@
+@baseUrl = http://localhost:3000
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTQ1MjNjNzcwMThkNDliYTgyN2UwZTkiLCJyb2xlIjoiYWRtaW4iLCJjb21wYW55IjpudWxsLCJpYXQiOjE3ODI5MTYwMzksImV4cCI6MTc4MjkyMzIzOX0.Fmxyago4wC5ieKQ4CsF4iM6JPqOTd6BFAwbZdWSrlKE
+
+@clientId = 6a4524c57018d49ba827e10e
+@projectId = 6a45255f7018d49ba827e126
+
+@deliveryNoteId = 6a4525dc7018d49ba827e130
+@deliveryNoteIdSinFirmar = 6a45256e7018d49ba827e12b
+
+### Crear albarán de materiales
+POST {{baseUrl}}/api/deliverynote
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "client": "{{clientId}}",
+  "project": "{{projectId}}",
+  "format": "material",
+  "description": "Entrega de cemento",
+  "workDate": "2026-01-10",
+  "material": "Cemento",
+  "quantity": 10,
+  "unit": "sacos"
+}
+
+### Crear albarán de horas con varios trabajadores
+POST {{baseUrl}}/api/deliverynote
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "client": "{{clientId}}",
+  "project": "{{projectId}}",
+  "format": "hours",
+  "description": "Instalación eléctrica planta baja",
+  "workDate": "2026-01-15",
+  "hours": 16,
+  "workers": [
+    { "name": "Juan Pérez", "hours": 8 },
+    { "name": "Ana López", "hours": 8 }
+  ]
+}
+
+### Listar albaranes
+GET {{baseUrl}}/api/deliverynote
+Authorization: Bearer {{accessToken}}
+
+### Listar albaranes filtrados por proyecto, formato y rango de fechas
+GET {{baseUrl}}/api/deliverynote?project={{projectId}}&format=hours&signed=false&from=2026-01-01&to=2026-12-31&sort=-workDate
+Authorization: Bearer {{accessToken}}
+
+### Obtener un albarán concreto
+GET {{baseUrl}}/api/deliverynote/{{deliveryNoteId}}
+Authorization: Bearer {{accessToken}}
+
+### Descargar el PDF del albarán
+GET {{baseUrl}}/api/deliverynote/pdf/{{deliveryNoteId}}
+Authorization: Bearer {{accessToken}}
+
+### Firmar el albarán (multipart/form-data con imagen)
+PATCH {{baseUrl}}/api/deliverynote/{{deliveryNoteId}}/sign
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=BOUNDARY123
+
+--BOUNDARY123
+Content-Disposition: form-data; name="signature"; filename="firma.png"
+Content-Type: image/png
+
+< ./firma-ejemplo.png
+--BOUNDARY123--
+
+### Intentar firmar sin imagen (debe dar 400)
+PATCH {{baseUrl}}/api/deliverynote/{{deliveryNoteId}}/sign
+Authorization: Bearer {{accessToken}}
+
+### Intentar borrar un albarán firmado (debe dar 400)
+DELETE {{baseUrl}}/api/deliverynote/{{deliveryNoteId}}
+Authorization: Bearer {{accessToken}}
+
+### Borrar un albarán no firmado
+DELETE {{baseUrl}}/api/deliverynote/{{deliveryNoteIdSinFirmar}}
+Authorization: Bearer {{accessToken}}
+
+### Listar albaranes archivados
+GET {{baseUrl}}/api/deliverynote/archived
+Authorization: Bearer {{accessToken}}

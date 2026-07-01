@@ -1,0 +1,87 @@
+@baseUrl = http://localhost:3000
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTQ1MjNjNzcwMThkNDliYTgyN2UwZTkiLCJyb2xlIjoiYWRtaW4iLCJjb21wYW55IjpudWxsLCJpYXQiOjE3ODI5MTYwMzksImV4cCI6MTc4MjkyMzIzOX0.Fmxyago4wC5ieKQ4CsF4iM6JPqOTd6BFAwbZdWSrlKE
+
+@clientId = 6a4524c57018d49ba827e10e
+
+
+@projectId = 6a45255f7018d49ba827e126
+
+### Crear proyecto
+POST {{baseUrl}}/api/project
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Reforma nave industrial",
+  "projectCode": "PRJ-2026-002",
+  "client": "{{clientId}}",
+  "address": {
+    "street": "Polígono Industrial",
+    "number": "3",
+    "postal": "28522",
+    "city": "Rivas",
+    "province": "Madrid"
+  },
+  "email": "obra@cliente.com",
+  "notes": "Reforma completa de nave de 500m2"
+}
+
+### Crear proyecto con código duplicado (debe dar 409)
+POST {{baseUrl}}/api/project
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Otro proyecto",
+  "projectCode": "PRJ-2026-001",
+  "client": "{{clientId}}"
+}
+
+### Crear proyecto con cliente inexistente (debe dar 400)
+POST {{baseUrl}}/api/project
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Proyecto fantasma",
+  "projectCode": "PRJ-2026-999",
+  "client": "665f1a2b3c4d5e6f7a8b9c0d"
+}
+
+### Listar proyectos
+GET {{baseUrl}}/api/project
+Authorization: Bearer {{accessToken}}
+
+### Listar proyectos filtrados por cliente y activos
+GET {{baseUrl}}/api/project?client={{clientId}}&active=true&sort=-createdAt
+Authorization: Bearer {{accessToken}}
+
+### Obtener un proyecto concreto
+GET {{baseUrl}}/api/project/{{projectId}}
+Authorization: Bearer {{accessToken}}
+
+### Actualizar un proyecto
+PUT {{baseUrl}}/api/project/{{projectId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "notes": "Actualización de notas del proyecto",
+  "active": false
+}
+
+### Archivar un proyecto
+DELETE {{baseUrl}}/api/project/{{projectId}}?soft=true
+Authorization: Bearer {{accessToken}}
+
+### Borrar un proyecto definitivamente
+DELETE {{baseUrl}}/api/project/{{projectId}}?soft=false
+Authorization: Bearer {{accessToken}}
+
+### Listar proyectos archivados
+GET {{baseUrl}}/api/project/archived
+Authorization: Bearer {{accessToken}}
+
+### Restaurar un proyecto archivado
+PATCH {{baseUrl}}/api/project/{{projectId}}/restore
+Authorization: Bearer {{accessToken}}

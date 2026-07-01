@@ -1,7 +1,6 @@
 
-@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQ1NmY3MmEzN2VmY2E4YzQ2OTg1MjUiLCJyb2xlIjoiYWRtaW4iLCJjb21wYW55IjpudWxsLCJpYXQiOjE3NzU1OTUzNzgsImV4cCI6MTc3NTYwMjU3OH0._SpBvm7OKVwiTcbrXvPqHcUAUTFwv-5A1R-oysaaYyA
-@refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQ1NmY3MmEzN2VmY2E4YzQ2OTg1MjUiLCJpYXQiOjE3NzU1OTUzNzgsImV4cCI6MTc3NjIwMDE3OH0.TzNc269mpcCqDxLGI-nlenhIp-zTYvd_ZlytyvL0XaM
-
+@accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTQ1MjNjNzcwMThkNDliYTgyN2UwZTkiLCJyb2xlIjoiYWRtaW4iLCJjb21wYW55IjpudWxsLCJpYXQiOjE3ODI5MTYwMzksImV4cCI6MTc4MjkyMzIzOX0.Fmxyago4wC5ieKQ4CsF4iM6JPqOTd6BFAwbZdWSrlKE
+@refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTQ1MjNjNzcwMThkNDliYTgyN2UwZTkiLCJpYXQiOjE3ODI5MTYwMzksImV4cCI6MTc4MzUyMDgzOX0.M8rBhvjwqvI8tQQaJ2uS9_DBOKKUf6FXm3bEZotpCYQ
 @code =490294
 @accessToken_carlos=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQ1NmZmOWEzN2VmY2E4YzQ2OTg1MzIiLCJyb2xlIjoiYWRtaW4iLCJjb21wYW55IjpudWxsLCJpYXQiOjE3NzU1OTU1MTMsImV4cCI6MTc3NTYwMjcxM30.lqzwPNdl1EBbARaxjeu4gXnuMuQ2S4Tk6RF8xVXDG50
 @refreshToken_carlos=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQ1NmZmOWEzN2VmY2E4YzQ2OTg1MzIiLCJpYXQiOjE3NzU1OTU1MTMsImV4cCI6MTc3NjIwMDMxM30.ZrfX6AIwiJayfJCRmrBxz8Ydz2zAuW8GU_cuZsLYyc0
@@ -19,7 +18,7 @@ POST http://localhost:3000/api/user/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "marta@example.com",
+  "email": "veronica@example.com",
   "password": "12345678"
 }
 
@@ -46,7 +45,7 @@ POST http://localhost:3000/api/user/register HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "marta@example.com",
+  "email": "veronica@example.com",
   "password": "Password123"
 }
 
@@ -145,7 +144,7 @@ POST http://localhost:3000/api/user/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "marta@example.com",
+  "email": "veronica@example.com",
   "password": "12345678"
 }
 
@@ -154,7 +153,7 @@ POST http://localhost:3000/api/user/login HTTP/1.1
 Content-Type: application/json
 
 {
-  "email": "marta@example.com",
+  "email": "veronica@example.com",
   "password": "4567890"
 }
 
@@ -332,7 +331,7 @@ Authorization: Bearer {{accessToken_carlos}}
 Content-Type: application/json
 
 {
-  "email": "marta@example.com"
+  "email": "veronica@example.com"
 }
 
 ### Usuario no admin intenta invitar

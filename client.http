@@ -1,18 +1,82 @@
-@accessToken= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWYzMzhhZTlmYTdjMzk3YTBiMTcwNmQiLCJyb2xlIjoiYWRtaW4iLCJjb21wYW55IjpudWxsLCJpYXQiOjE3Nzc1NDc0MzgsImV4cCI6MTc3NzU1NDYzOH0.Oz7ithluhmYGmMmGFFT1gctFjKSiowRlNsOx-3irq3U
-@refreshToken= eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWYzMzhhZTlmYTdjMzk3YTBiMTcwNmQiLCJpYXQiOjE3Nzc1NDc0MzgsImV4cCI6MTc3ODE1MjIzOH0.pWIkOQLWlGbK1aD03eKe0FX8__6BvvhVRM-i9-LXoL0
+@baseUrl = http://localhost:3000
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2YTQ1MjNjNzcwMThkNDliYTgyN2UwZTkiLCJyb2xlIjoiYWRtaW4iLCJjb21wYW55IjpudWxsLCJpYXQiOjE3ODI5MTYwMzksImV4cCI6MTc4MjkyMzIzOX0.Fmxyago4wC5ieKQ4CsF4iM6JPqOTd6BFAwbZdWSrlKE
 
-### 
-POST http://localhost:3000/api/client 
+@clientId = 6a4524c57018d49ba827e10e
+
+### Crear cliente
+POST {{baseUrl}}/api/client
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 
 {
-  "name": "Cliente",
-  "cif": "B12345678",
-  "email": "cliente.prueba@example.com",
+  "name": "Construcciones García SL",
+  "cif": "B12342378",
+  "email": "cliente@example.com",
+  "phone": "600111222",
   "address": {
-    "street": "Calle de Prueba, 123",
-    "city": "Ciudad",
-    "country": "País"
+    "street": "Calle Mayor",
+    "number": "10",
+    "postal": "28001",
+    "city": "Madrid",
+    "province": "Madrid"
   }
-} 
+}
+
+### Crear cliente con CIF duplicado (debe dar 409)
+POST {{baseUrl}}/api/client
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "Otra empresa",
+  "cif": "B12342378"
+}
+
+### Crear cliente sin nombre (debe dar 400)
+POST {{baseUrl}}/api/client
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "cif": "B87654321"
+}
+
+### Listar clientes
+GET {{baseUrl}}/api/client
+Authorization: Bearer {{accessToken}}
+
+### Listar clientes con paginación y filtro por nombre
+GET {{baseUrl}}/api/client?page=1&limit=5&name=García&sort=-createdAt
+Authorization: Bearer {{accessToken}}
+
+### Obtener un cliente concreto
+GET {{baseUrl}}/api/client/{{clientId}}
+Authorization: Bearer {{accessToken}}
+
+### Actualizar un cliente
+PUT {{baseUrl}}/api/client/{{clientId}}
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "phone": "699999999"
+}
+
+### Archivar un cliente (soft delete)
+DELETE {{baseUrl}}/api/client/{{clientId}}?soft=true
+Authorization: Bearer {{accessToken}}
+
+### Borrar un cliente definitivamente
+DELETE {{baseUrl}}/api/client/{{clientId}}?soft=false
+Authorization: Bearer {{accessToken}}
+
+### Listar clientes archivados
+GET {{baseUrl}}/api/client/archived
+Authorization: Bearer {{accessToken}}
+
+### Restaurar un cliente archivado
+PATCH {{baseUrl}}/api/client/{{clientId}}/restore
+Authorization: Bearer {{accessToken}}
+
+### Petición sin token (debe dar 401)
+GET {{baseUrl}}/api/client

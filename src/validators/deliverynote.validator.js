@@ -1,52 +1,40 @@
-import {z} from 'zod';
+import { z } from 'zod';
 
-// TODO: añadir mensakes
-
-const objectIdValidator = z
-  .string()
-  .regex(/^[0-9a-fA-F]{24}$/, 'ID de MongoDB no válido');
+const objectIdValidator = z.string().regex(/^[0-9a-fA-F]{24}$/, 'ID de MongoDB no válido');
 
 const workerValidator = z.object({
-  name: z.string().trim().min(1, 'El nombre del trabajador es obligatorio'),
-  hours: z.coerce.number().positive('Las horas del trabajador deben ser mayores que 0'),
+  name: z.string().trim().optional(),
+  hours: z.coerce.number().min(0).optional(),
 });
 
+const baseDeliveryNoteBody = {
+  client: objectIdValidator,
+  project: objectIdValidator,
+  format: z.enum(['material', 'hours']),
+  description: z.string().trim().optional(),
+  workDate: z.coerce.date(),
+  material: z.string().trim().optional(),
+  quantity: z.coerce.number().min(0).optional(),
+  unit: z.string().trim().optional(),
+  hours: z.coerce.number().min(0).optional(),
+  workers: z.array(workerValidator).optional(),
+};
+
 export const createDeliveryNoteValidator = z.object({
-    client: z.string().optional(),
-    project: z.string().optional(),
-    format: z.enum(['material', 'hours']),
-    description: z.string().optional(),
-    workDate: z.string().optional(), // ISO date string
-    material: z.string().optional(),
-    quantity: z.number().optional(),
-    unit: z.string().optional(),
-    hours: z.number().optional(),
-    workers: z.array(z.object({
-        name: z.string().optional(),
-        hours: z.number().optional()
-    })).optional()
+  body: z.object(baseDeliveryNoteBody),
 });
 
 export const updateDeliveryNoteValidator = z.object({
-    client: z.string().optional(),
-    project: z.string().optional(),
-    format: z.enum(['material', 'hours']).optional(),
-    description: z.string().optional(),
-    workDate: z.string().optional(), // ISO date string
-    material: z.string().optional(),
-    quantity: z.number().optional(),
-    unit: z.string().optional(),
-    hours: z.number().optional(),
-    workers: z.array(z.object({
-        name: z.string().optional(),
-        hours: z.number().optional()
-    })).optional()
+  body: z.object({
+    ...Object.fromEntries(
+      Object.entries(baseDeliveryNoteBody).map(([key, schema]) => [key, schema.optional()])
+    ),
+  }),
+  params: z.object({ id: objectIdValidator }),
 });
 
 export const deliveryNoteIdValidator = z.object({
-  params: z.object({
-    id: objectIdValidator,
-  }),
+  params: z.object({ id: objectIdValidator }),
 });
 
 export const listDeliveryNotesValidator = z.object({
@@ -56,7 +44,10 @@ export const listDeliveryNotesValidator = z.object({
     project: objectIdValidator.optional(),
     client: objectIdValidator.optional(),
     format: z.enum(['material', 'hours']).optional(),
-    signed: z.enum(['true', 'false']).optional(),
+    signed: z
+      .enum(['true', 'false'])
+      .transform((value) => value === 'true')
+      .optional(),
     from: z.coerce.date().optional(),
     to: z.coerce.date().optional(),
     sort: z.string().trim().optional().default('-workDate'),
