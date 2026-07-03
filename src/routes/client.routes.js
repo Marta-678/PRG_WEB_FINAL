@@ -4,6 +4,7 @@ import { validate } from '../middleware/validate.js';
 import * as clientController from '../controllers/client.controller.js';
 import {
   createClientValidator,
+  replaceClientValidator,
   updateClientValidator,
   clientIdValidator,
   listClientsValidator,
@@ -86,7 +87,8 @@ router.get('/archived', authMiddleware, clientController.getArchivedClients);
  *       200: { description: Cliente archivado o eliminado }
  */
 router.get('/:id', authMiddleware, validate(clientIdValidator), clientController.getClientById);
-router.put('/:id', authMiddleware, validate(updateClientValidator), clientController.updateClient);
+router.put('/:id', authMiddleware, validate(replaceClientValidator), clientController.replaceClient);
+router.patch('/:id', authMiddleware, validate(updateClientValidator), clientController.patchClient);
 router.delete('/:id', authMiddleware, validate(clientIdValidator), clientController.deleteClient);
 
 /**
