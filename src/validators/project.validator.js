@@ -52,3 +52,16 @@ export const listProjectsValidator = z.object({
     sort: z.string().trim().optional(),
   }),
 });
+
+export const replaceProjectValidator = z.object({
+  body: z.object({
+    name: z.string().min(1, 'El nombre del proyecto es obligatorio'),
+    projectCode: z.string().min(1, 'El código del proyecto es obligatorio'),
+    client: objectId,
+    address: addressSchema.optional(),
+    email: z.string().email('Email no válido').optional(),
+    notes: z.string().optional(),
+    active: z.boolean().optional(),
+  }),
+  params: z.object({ id: objectId }),
+});

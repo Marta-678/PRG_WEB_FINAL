@@ -65,7 +65,48 @@ export const createProject = async (req, res, next) => {
   }
 };
 
-export const updateProject = async (req, res, next) => {
+export const replaceProject = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { name, projectCode, client: clientId, address, email, notes, active } = req.body;
+    const companyId = req.user.company;
+
+    const project = await Project.findOne({ _id: id, company: companyId, deleted: false });
+    if (!project) {
+      return next(AppError.notFound('Proyecto no encontrado'));
+    }
+
+    if (projectCode !== project.projectCode) {
+      const existingCode = await Project.findOne({ projectCode, company: companyId, deleted: false });
+      if (existingCode) {
+        return next(AppError.conflict('Ya existe un proyecto con ese código en tu compañía'));
+      }
+    }
+
+    if (clientId !== project.client.toString()) {
+      const client = await Client.findOne({ _id: clientId, company: companyId, deleted: false });
+      if (!client) {
+        return next(AppError.badRequest('Cliente no encontrado o no pertenece a tu compañía'));
+      }
+    }
+
+    project.name = name;
+    project.projectCode = projectCode;
+    project.client = clientId;
+    project.address = address;
+    project.email = email;
+    project.notes = notes;
+    project.active = active ?? true;
+
+    await project.save();
+
+    res.status(200).json({ status: 'success', data: { project } });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const patchProject = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { name, projectCode, address, email, notes, client: clientId, active } = req.body;

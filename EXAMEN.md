@@ -12,7 +12,8 @@
    ### Cómo lo arreglé
    Separé el PUT del PATCH en `cliente.validator` para que en vez de que todos los dats sean opcionales al menos `name`y `cif` sean obligatorios. La nueva validación se llama `replaceClientValidator` 
 
-   En `cliente.controller` sustituí `updateClient` porque como me has indicado actualiza si el valor anterior no es actualizado y eso no es un PUT. Ahora he creado dos `replaceClient` y `patchClient`
+   En `cliente.controller` sustituí `updateClient` porque como me has indicado actualiza si el valor anterior no es actualizado y eso no es un PUT. Ahora he creado dos `replaceClient` y `patchClient`. Ahora tengo 2 PACTH pero no son lo mismo uno es con solo el id y el otro es con el id/restore. 
+   
 
    ### Por qué mi solución es correcta
    [...]

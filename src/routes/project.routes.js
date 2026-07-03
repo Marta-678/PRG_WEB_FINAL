@@ -5,6 +5,7 @@ import * as projectController from '../controllers/project.controller.js';
 import {
   createProjectValidator,
   updateProjectValidator,
+  replaceProjectValidator,
   projectIdValidator,
   listProjectsValidator,
 } from '../validators/project.validator.js';
@@ -92,7 +93,8 @@ router.get('/archived', authMiddleware, projectController.getArchivedProjects);
  *       200: { description: Proyecto archivado o eliminado }
  */
 router.get('/:id', authMiddleware, validate(projectIdValidator), projectController.getProjectById);
-router.put('/:id', authMiddleware, validate(updateProjectValidator), projectController.updateProject);
+router.put('/:id', authMiddleware, validate(replaceProjectValidator), projectController.replaceProject);
+router.patch('/:id', authMiddleware, validate(updateProjectValidator), projectController.patchProject);
 router.delete('/:id', authMiddleware, validate(projectIdValidator), projectController.deleteProject);
 
 /**
