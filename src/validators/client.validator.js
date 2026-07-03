@@ -45,3 +45,14 @@ export const listClientsValidator = z.object({
     sort: z.string().trim().optional().default('-createdAt'),
   }),
 });
+
+export const replaceClientValidator = z.object({
+  body: z.object({
+    name: z.string().trim().min(1, 'El nombre es obligatorio'),
+    cif: z.string({ required_error: 'El CIF es obligatorio' }).trim().min(9, 'CIF no válido'),
+    email: z.string().trim().email('Email no válido').toLowerCase().optional(),
+    phone: z.string().trim().optional(),
+    address: addressValidator,
+  }),
+  params: z.object({ id: objectIdValidator }),
+});
