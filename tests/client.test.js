@@ -106,3 +106,61 @@ describe('Client', () => {
     expect(res.status).toBe(404);
   });
 });
+
+it('PUT reemplaza el documento completo y borra los campos no enviados', async () => {
+  const { token } = await createCompanyWithUser();
+
+  const createRes = await request(app)
+    .post('/api/client')
+    .set(authHeader(token))
+    .send({ name: 'Cliente Full', cif: 'B33333333', email: 'full@test.com', phone: '600000000' });
+
+  const id = createRes.body.data.client._id;
+
+  const putRes = await request(app)
+    .put(`/api/client/${id}`)
+    .set(authHeader(token))
+    .send({ name: 'Cliente Reemplazado', cif: 'B33333333' });
+
+  expect(putRes.status).toBe(200);
+  expect(putRes.body.data.client.email).toBeUndefined();
+  expect(putRes.body.data.client.phone).toBeUndefined();
+});
+
+it('PUT es idempotente: la misma petición repetida deja el mismo estado final', async () => {
+  const { token } = await createCompanyWithUser();
+
+  const createRes = await request(app)
+    .post('/api/client')
+    .set(authHeader(token))
+    .send({ name: 'Cliente Idempotente', cif: 'B44444444' });
+
+  const id = createRes.body.data.client._id;
+  const payload = { name: 'Cliente Final', cif: 'B44444444', phone: '699999999' };
+
+  const first = await request(app).put(`/api/client/${id}`).set(authHeader(token)).send(payload);
+  const second = await request(app).put(`/api/client/${id}`).set(authHeader(token)).send(payload);
+
+  expect(first.body.data.client.name).toBe(second.body.data.client.name);
+  expect(first.body.data.client.phone).toBe(second.body.data.client.phone);
+  expect(second.body.data.client.email).toBeUndefined();
+});
+
+it('PATCH conserva los campos no enviados (comportamiento distinto de PUT)', async () => {
+  const { token } = await createCompanyWithUser();
+
+  const createRes = await request(app)
+    .post('/api/client')
+    .set(authHeader(token))
+    .send({ name: 'Cliente Patch', cif: 'B55555555', phone: '611111111' });
+
+  const id = createRes.body.data.client._id;
+
+  const patchRes = await request(app)
+    .patch(`/api/client/${id}`)
+    .set(authHeader(token))
+    .send({ name: 'Cliente Patch Actualizado' });
+
+  expect(patchRes.status).toBe(200);
+  expect(patchRes.body.data.client.phone).toBe('611111111');
+});
